@@ -1,0 +1,21 @@
+.selectors_container {display: inline;}
+.selectors {display: inline-block;}
+.select_course,.select_group{height:20px;background:#fff;border:1px solid #bbb;z-index:1;width: 160px;display: inline-block;margin: 0 10px;}
+.btn_add {height:20px;background:#fff;border:1px solid #bbb;z-index:1;display: inline-block;margin: 0 10px;}
+.btn_add > span {display:block;height:20px;text-align:center;vertical-align:middle;cursor:pointer;padding:0 5px;}
+.select_course > span > .my_handle,.select_group > span > .my_handle{margin-top: -10px;}
+.select_course > span > .my_handle:before,.select_group > span > .my_handle:before{content: '\f140'!important;}
+.select_course > span,.select_group > span{display:block;height:20px;text-align:center;vertical-align:middle;cursor:pointer;}
+.select_{display:none;position:absolute;width: 139px;padding: 5px 10px;background:#fff;border:1px solid #bbb;overflow:auto;}
+.select_ > div{white-space:nowrap}
+.select_course:hover,.select_group:hover{z-index:100;}
+.select_course:hover > .select_,.select_group:hover > .select_{display:block;z-index:100;}
+.select_course:hover > span > .my_handle:before,.select_group:hover > span > .my_handle:before{content: '\f142'!important;}
+.select_type:focus{z-index:100;}
+.select_type:focus + .select_, .select_.types_list:hover{display:block;z-index:100;}
+.select_.types_list{width: 360px;}
+.added{max-width:180px;}
+.del_courseGroup{float: right;cursor: pointer;font-style: italic;}
+.del_courseGroup:hover{text-decoration:underline;font-weight:bold;}
+
+#minor-publishing-actions{display: none;}
