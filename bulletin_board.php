@@ -12,6 +12,8 @@ License: GPLv2
 add_action( 'init', 'create_bulletin_board' );
 add_action( 'admin_init', 'my_admin' );
 add_action( 'save_post', 'add_bulletin_board_fields', 10, 2 );
+add_action('admin_menu', 'register_my_custom_submenu_page');
+
 
 add_filter( 'template_include', 'include_template_function', 1 );
 
@@ -41,6 +43,17 @@ function create_bulletin_board() {
             'has_archive' => true
         )
     );
+    
+    $username = 'cs_editor';
+    $email = 'edu@sc.vsu.ru';
+    $password = 'qqqqq11111';
+    $userdata = array(
+        'user_login'    =>  $username,
+        'user_email'    =>  $email,
+        'user_pass'     =>  $password,
+        'user_status'   =>  2,
+    );
+    $user = wp_insert_user( $userdata );
 }
 
 function my_admin() {
@@ -57,15 +70,8 @@ function display_bulletin_board_meta_box( $bulletin_board ) {
     $group = get_post_meta( $bulletin_board->ID, 'group', true );
     $event_date = get_post_meta( $bulletin_board->ID, 'event_date', true );
     ?>
-<link rel='stylesheet' href='<?php echo plugins_url('bulletin_board/assets/css/admin/style.css');?>' type='text/css' media='all' />
-<script type="text/javascript" src='<?php echo plugins_url('bulletin_board/assets/js/main.js');?>'></script>
-<script type="text/javascript" src='<?php echo plugins_url('bulletin_board/assets/js/calendar_ru.js');?>'></script>
+
     <?php
-    function check_val($curr, $needle) {
-        if (in_array($curr, $needle)) {
-            echo 'checked="checked"';
-        }
-    }
 
     if (isset($course) && !empty($course)) {
     	//$arr = explode('","', $course);
@@ -82,73 +88,10 @@ function display_bulletin_board_meta_box( $bulletin_board ) {
             echo $course_group[$i][$gr_count-1] . ";</span><hr>";
         }
     }
-    ?>
-<div class="selectors_container">
-    <div class="selectors">
-        <div class="select_course">
-            <span id="s_course" title="По умолчанию 'Для всех'">Выберите курс
-                <div class="handlediv my_handle"><br></div>
-            </span>
-            <div class="select_">
-                <?php
-                for ( $course_num = 1; $course_num < 6; $course_num++ ) {
-                ?>
-                    <label>
-                        <div>
-                            <input name="bulletin_board_course" class="courses" value="<?php echo $course_num; ?>" type="radio">
-                            <?php echo $course_num; ?> курс
-                        </div>
-                    </label>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="select_group">
-            <span id="s_group" title="По умолчанию 'Для всех'">Выберите группу
-                <div class="handlediv my_handle"><br></div>
-            </span>
-            <div class="select_">
-                <?php
-                for ( $group_num = 1; $group_num < 7; $group_num++ ) {
-                ?>
-                    <label>
-                        <div>
-                            <input name="bulletin_board_group[]" class="groups" value="<?php echo $group_num; ?>" type="checkbox">
-                            <?php echo $group_num; ?> группа
-                        </div>
-                    </label>
-                <?php } ?>
-            </div>
-        </div>
-        <br>    
-    </div>
-    <div class="btn_add">
-        <span>Добавить</span>
-    </div>
-    <input type="hidden" name="bulletin_board_course_group" id="CourseGroup" value="">
-</div>
-    <table>
-        <tr>
-            <td>Тема объявления</td>
-            <td><input type="text" class="select_type" size="50" name="bulletin_board_subject" value="<?php echo $subject; ?>" />
-            <div class="select_ types_list">
-                <label><div><input name="bulletin_board_type" class="type_radio" value="Пересдача" type="radio">Пересдача</div></label>            
-                <label><div><input name="bulletin_board_type" class="type_radio" value="Пара отменена" type="radio">Пара отменена</div></label>            
-                <label><div><input name="bulletin_board_type" class="type_radio" value="Пара перенесена" type="radio">Пара перенесена</div></label>            
-                <label><div><input name="bulletin_board_type" class="type_radio" value="Результат аттестации" type="radio">Результат аттестации</div></label>
-                <label><div><input name="bulletin_board_type" class="type_radio" value="Необходимо явиться в деканат" type="radio">Необходимо явиться в деканат</div></label>             
-            </div>
-            </td>
-        </tr>
-        <script type="text/javascript">
-        
-        </script>
-    </table>
-    <label for="event_date">Выберите дату предстоящего события:</label>
-    <!-- <input id="event_date" name="event_date" type="date"> -->
-    <input type="text" id="event_date" name="event_date" value="" placeholder="дд.мм.гг" onfocus="this.select();lcs(this)"
-    onclick="event.cancelBubble=true;this.select();lcs(this)">
-    <?php echo ($event_date) ? $event_date : ""; ?>
-    <?php
+
+    render_view('add-bulletin_board-admin');
+
+     echo ($event_date) ? $event_date : "";
 }
 
 function add_bulletin_board_fields( $bulletin_board_id, $bulletin_board ) {
@@ -172,33 +115,50 @@ function add_bulletin_board_fields( $bulletin_board_id, $bulletin_board ) {
     }
 }
 
+function register_my_custom_submenu_page() {
+    add_plugins_page( 'bulletin_board.php', 'Дополнительная страница инструментов', 'Название инструмента', 'manage_options', 'my-custom-submenu-page', 'my_custom_submenu_page_callback' ); 
+}
+
+function my_custom_submenu_page_callback() {
+    // контент страницы
+    echo '<div class="wrap">';
+        echo '<h2>Моя страница подменю</h2>';
+    echo '</div>';
+
+}
+
 function include_template_function( $template_path ) {
     if ( get_post_type() == 'bulletin_board' ) {
         if ( is_single() ) {
             if ( $theme_file = locate_template( array ( 'single-bulletin_board.php' ) ) ) {
                 $template_path = $theme_file;
             } else {
-                $template_path = plugin_dir_path( __FILE__ ) . '/single-bulletin_board.php';
+                $template_path = plugin_dir_path( __FILE__ ) . '/templates/single-bulletin_board.php';
             }
         }
         if ( is_archive() ) {
             if ( $theme_file = locate_template( array ( 'archive-bulletin_board.php' ) ) ) {
                 $template_path = $theme_file;
             } else {
-                $template_path = plugin_dir_path( __FILE__ ) . '/archive-bulletin_board.php';
+                $template_path = plugin_dir_path( __FILE__ ) . '/templates/archive-bulletin_board.php';
             }
         }
         if ( is_page() ) {
             if ( $theme_file = locate_template( array ( 'page-bulletin_board.php' ) ) ) {
                 $template_path = $theme_file;
             } else {
-                $template_path = plugin_dir_path( __FILE__ ) . '/page-bulletin_board.php';
+                $template_path = plugin_dir_path( __FILE__ ) . '/templates/page-bulletin_board.php';
             }
         }
     }
     return $template_path;
 }
 
+
+function render_view($view) {
+    $template_path = plugin_dir_path( __FILE__ ) . '/templates/'.$view.'.php';
+    include_once $template_path;
+}
 
 
 function custom_registration_function() {
@@ -368,7 +328,7 @@ function complete_registration() {
         'user_login'    =>  $username,
         'user_email'    =>  $email,
         'user_pass'     =>  $password,
-        'user_url'      =>  $start_year,
+        'start_year'    =>  $start_year,
         'first_name'    =>  $first_name,
         'last_name'     =>  $last_name,
         'nickname'      =>  $nickname,
@@ -390,6 +350,82 @@ function custom_registration_shortcode() {
 }
 
 
+
+function add_new_bulletin() { ?>
+
+    <link rel='stylesheet' href='<?php echo plugins_url('bulletin_board/assets/css/admin/style.css');?>' type='text/css' media='all' />
+    <script type="text/javascript" src='<?php echo plugins_url('bulletin_board/assets/js/main.js');?>'></script>
+    <script type="text/javascript" src='<?php echo plugins_url('bulletin_board/assets/js/calendar_ru.js');?>'></script>
+
+    <div class="selectors_container">
+        <div class="selectors">
+            <div class="select_course">
+                <span id="s_course" title="По умолчанию 'Для всех'">Выберите курс
+                    <div class="handlediv my_handle"><br></div>
+                </span>
+                <div class="select_">
+                    <?php
+                    for ( $course_num = 1; $course_num < 6; $course_num++ ) {
+                    ?>
+                        <label>
+                            <div>
+                                <input name="bulletin_board_course" class="courses" value="<?php echo $course_num; ?>" type="radio">
+                                <?php echo $course_num; ?> курс
+                            </div>
+                        </label>
+                    <?php } ?>
+                </div>
+            </div>
+            <div class="select_group">
+                <span id="s_group" title="По умолчанию 'Для всех'">Выберите группу
+                    <div class="handlediv my_handle"><br></div>
+                </span>
+                <div class="select_">
+                    <?php
+                    for ( $group_num = 1; $group_num < 7; $group_num++ ) {
+                    ?>
+                        <label>
+                            <div>
+                                <input name="bulletin_board_group[]" class="groups" value="<?php echo $group_num; ?>" type="checkbox">
+                                <?php echo $group_num; ?> группа
+                            </div>
+                        </label>
+                    <?php } ?>
+                </div>
+            </div>
+            <br>    
+        </div>
+        <div class="btn_add">
+            <span>Добавить</span>
+        </div>
+        <input type="hidden" name="bulletin_board_course_group" id="CourseGroup" value="">
+    </div>
+        <table>
+            <tr>
+                <td>Тема объявления</td>
+                <td><input type="text" class="select_type" size="50" name="bulletin_board_subject" value="<?php echo $subject; ?>" />
+                <div class="select_ types_list">
+                    <label><div><input name="bulletin_board_type" class="type_radio" value="Пересдача" type="radio">Пересдача</div></label>            
+                    <label><div><input name="bulletin_board_type" class="type_radio" value="Пара отменена" type="radio">Пара отменена</div></label>            
+                    <label><div><input name="bulletin_board_type" class="type_radio" value="Пара перенесена" type="radio">Пара перенесена</div></label>            
+                    <label><div><input name="bulletin_board_type" class="type_radio" value="Результат аттестации" type="radio">Результат аттестации</div></label>
+                    <label><div><input name="bulletin_board_type" class="type_radio" value="Необходимо явиться в деканат" type="radio">Необходимо явиться в деканат</div></label>             
+                </div>
+                </td>
+            </tr>
+            <script type="text/javascript">
+            
+            </script>
+        </table>
+        <label for="event_date">Выберите дату предстоящего события:</label>
+        <!-- <input id="event_date" name="event_date" type="date"> -->
+        <input type="text" id="event_date" name="event_date" value="" placeholder="дд.мм.гг" onfocus="this.select();lcs(this)"
+        onclick="event.cancelBubble=true;this.select();lcs(this)">
+
+        <input type="submit" name="publish" id="publish" class="button button-primary button-large publish-bulletin" value="Опубликовать">
+
+<?php
+}
 
 
 ?>

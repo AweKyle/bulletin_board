@@ -21,6 +21,14 @@ get_header(); ?>
 	<section id="primary" class="content-area">
 		<main id="main" class="site-main 123321" role="main">
 	    <?php
+	    $user_meta = get_userdata( get_current_user_id() );
+	    if (empty($user_meta->start_year) OR !isset($user_meta->start_year)) {
+	    	$meta_value = '2010';
+	    	update_user_meta( get_current_user_id(), 'start_year', $meta_value );
+	    }
+	    else {
+	    	echo "<p>Год поступления: " . $user_meta->start_year . "</p>";
+	    }
 	    $mypost = array( 'post_type' => 'bulletin_board', );
 	    $loop = new WP_Query( $mypost );
 	    ?>
