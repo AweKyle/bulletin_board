@@ -13,7 +13,9 @@
  * @since Twenty Fifteen 1.0
  */
 
-get_header(); ?>
+load_template( dirname( __FILE__ ) . '/header-bulletin_board.php', true);
+//get_header(); 
+?>
 
 <style type="text/css">
     hr {
@@ -64,6 +66,18 @@ get_header(); ?>
              * (where ___ is the post format) and that will be used instead.
              */
             the_content();
+            ?>
+             <script type="text/javascript">(function() {
+              if (window.pluso)if (typeof window.pluso.start == "function") return;
+              if (window.ifpluso==undefined) { window.ifpluso = 1;
+                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                s.type = 'text/javascript'; s.charset='UTF-8'; s.async = true;
+                s.src = ('https:' == window.location.protocol ? 'https' : 'http')  + '://share.pluso.ru/pluso-like.js';
+                var h=d[g]('body')[0];
+                h.appendChild(s);
+              }})();</script>
+            <div class="pluso" data-background="transparent" data-options="small,square,line,horizontal,nocounter,theme=05" data-services="vkontakte,odnoklassniki,facebook,twitter,google,email,print"></div>
+            <?php
             /*get_template_part( 'content', get_post_format() );*/
 
             // Previous/next post navigation.
@@ -126,7 +140,7 @@ get_header(); ?>
                 ?>
             </header>
             <div class="entry-content"><?php the_content(); ?></div>
-        </article>
+           </article>
     <?php endwhile; ?>
     </div>
 </div>

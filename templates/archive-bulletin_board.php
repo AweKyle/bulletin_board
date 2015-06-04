@@ -16,30 +16,19 @@
  * @since Twenty Fifteen 1.0
  */
 
-get_header(); ?>
+load_template( dirname( __FILE__ ) . '/header-bulletin_board.php', true);
+//get_header('bulletin_board'); 
+?>
 
 	<section id="primary" class="content-area">
-		<main id="main" class="site-main 123321" role="main">
+		<main id="main" class="site-main" role="main">
 	    <?php
-	    $user_meta = get_userdata( get_current_user_id() );
-	    if (empty($user_meta->start_year) OR !isset($user_meta->start_year)) {
-	    	$meta_value = '2010';
-	    	update_user_meta( get_current_user_id(), 'start_year', $meta_value );
-	    }
-	    else {
-	    	echo "<p>Год поступления: " . $user_meta->start_year . "</p>";
-	    }
 	    $mypost = array( 'post_type' => 'bulletin_board', );
 	    $loop = new WP_Query( $mypost );
 	    ?>
 		<?php if ( have_posts() ) : ?>
 
-			<header class="page-header">
-				<?php
-					the_archive_title( '<h1 class="page-title">', '</h1>' );
-					the_archive_description( '<div class="taxonomy-description">', '</div>' );
-				?>
-			</header><!-- .page-header -->
+			
 
 			<?php
 			// Start the Loop.

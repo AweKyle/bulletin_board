@@ -1,0 +1,41 @@
+.advanced_settings {
+	font-size: 14px;
+	padding: 0px 9px;
+	cursor: pointer;
+	color: #eee;
+	font: 400 13px/32px "Open Sans",sans-serif;
+	height: 32px;
+	position: fixed;
+	z-index: 99999;
+	background: #23282d;
+	right: 0;
+}
+
+.advanced_settings:hover {
+	background: #32373c;
+	color: #00b9eb;
+}
+
+.sub_advanced_settings {
+	background: #32373c;
+	font-size: 14px;
+	padding: 0px 9px;
+	color: #eee;
+	font: 400 13px/32px "Open Sans",sans-serif;
+	height: 44px;
+	width: 236px;
+	position: fixed;
+	z-index: 99999;
+	right: 0;
+	top: 60px;
+	display: none;
+}
+
+.sub_advanced_settings input[type="text"] {
+	width: 20px;
+	height: 5px;
+}
+
+.advanced_settings:hover > .sub_advanced_settings {
+	display: block;
+}
